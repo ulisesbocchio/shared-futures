@@ -93,8 +93,8 @@ When the `@SharedFuture` annotation is used on a method, the key is generated ba
 	public class EnableSharedFuturesAutoConfiguration {
 
 		@Bean
-		public EnableSharedFuturesAspect enableSharedFuturesAspect() {
-			return new EnableSharedFuturesAspect();
+		public SharedFuturesAspect enableSharedFuturesAspect() {
+			return new SharedFuturesAspect();
 		}
 
 	    ...
