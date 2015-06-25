@@ -10,6 +10,10 @@ import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @ulisesbocchio
@@ -23,18 +27,13 @@ public class DefaultKeyGenerator implements KeyGenerator {
 
     @Override
     public String generate(Object target, Method method, Object... args) {
-        StringBuilder key = new StringBuilder(target.getClass().getName());
-        key.append("#").append(method.getName()).append("(");
         Parameter[] params = method.getParameters();
-        for(int i = 0; i < args.length; i++) {
-            key.append(getParamKey(args[i], target.getClass(), method, params[i]));
-            if(i < args.length - 1) {
-                key.append(",");
-            }
-        }
-        key.append(")");
-        LOG.debug("generated key: {}", key.toString());
-        return toMd5(key.toString());
+        String key = IntStream.range(0, params.length)
+                .mapToObj(i -> getParamKey(args[i], target.getClass(), method, params[i]))
+                .limit(params.length)
+                .collect(Collectors.joining(",", target.getClass().getName() + "#" + method.getName() + "(", ")"));
+        LOG.debug("generated key: {}", key);
+        return toMd5(key);
     }
 
     private String toMd5(String key) {
@@ -42,14 +41,14 @@ public class DefaultKeyGenerator implements KeyGenerator {
     }
 
     private String getParamKey(Object arg, Class targetClass, Method method, Parameter param) {
-        if(arg instanceof SharedFutureKey) {
+        if (arg instanceof SharedFutureKey) {
             return ((SharedFutureKey) arg).getKey();
         } else if (arg instanceof String) {
             return (String) arg;
         } else if (ClassUtils.isPrimitiveOrWrapper(arg.getClass())) {
-            return  arg.toString();
+            return arg.toString();
         } else if (arg instanceof Collection) {
-            return getCollectionParam((Collection)arg, targetClass, method, param);
+            return getCollectionParam((Collection) arg, targetClass, method, param);
         } else if (arg instanceof Map) {
             return getCollectionParam(((Map) arg).entrySet(), targetClass, method, param);
         } else if (arg instanceof Map.Entry) {
@@ -66,16 +65,9 @@ public class DefaultKeyGenerator implements KeyGenerator {
                 getParamKey(arg.getValue(), targetClass, method, param);
     }
 
-    private String getCollectionParam(Collection col, Class targetClass, Method method, Parameter param) {
-        StringBuilder key = new StringBuilder("[");
-        Iterator it = col.iterator();
-        while (it.hasNext()) {
-            key.append(getParamKey(it.next(), targetClass, method, param));
-            if(it.hasNext()) {
-                key.append(",");
-            }
-        }
-        key.append("]");
-        return key.toString();
+    private <T> String getCollectionParam(Collection<T> col, Class targetClass, Method method, Parameter param) {
+        return col.stream()
+                .map(e -> getParamKey(e, targetClass, method, param))
+                .collect(Collectors.joining(",", "[", "]"));
     }
 }

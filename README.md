@@ -93,7 +93,7 @@ When the `@SharedFuture` annotation is used on a method, the key is generated ba
 	public class EnableSharedFuturesAutoConfiguration {
 
 		@Bean
-		public SharedFuturesAspect enableSharedFuturesAspect() {
+		public SharedFuturesAspect sharedFuturesAspect() {
 			return new SharedFuturesAspect();
 		}
 
@@ -109,7 +109,7 @@ When the `@SharedFuture` annotation is used on a method, the key is generated ba
 	~~~
 
 
-4. Make sure parameter types are supported and implement `SharedFutureKey` in those custom types that aren't supported by default.
+4. Make sure parameter types are supported or implement `SharedFutureKey` in those custom types that aren't supported by default.
 
 	For instance, for the following Shared Future to work:
 	
@@ -131,6 +131,14 @@ When the `@SharedFuture` annotation is used on a method, the key is generated ba
 		}
 	}
 	~~~
+
+### Out-of-the-Box Supported Parameter types
+
+	- All Primitives
+	- All Primitive Wrappers
+	- String
+	- Collections and Maps are iterated over each element. Each element must be supported
+	- All Classes implementing SharedFutureKey  
 
 ## Memory Footpring and Performance
 

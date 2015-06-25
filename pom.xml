@@ -5,14 +5,14 @@
     <groupId>com.ulisesbocchio</groupId>
     <artifactId>shared-futures</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>shared-futures</name>
     <url>https://github.com/ulisesbocchio/shared-futures</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.1.5.RELEASE</spring.version>
+        <spring.version>4.1.6.RELEASE</spring.version>
         <java.version>1.8</java.version>
     </properties>
 

@@ -1,7 +1,5 @@
 package com.ulisesbocchio.sharedfutures.spring;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.ulisesbocchio.sharedfutures.SharedFuturesRegistry;
 import com.ulisesbocchio.sharedfutures.spring.annotation.SharedFuture;
